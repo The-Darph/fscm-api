@@ -7,7 +7,7 @@ CREATE TABLE events (
     scale INTEGER NOT NULL,
     source TEXT NOT NULL,
     transpired TEXT DEFAULT NULL,
-    published_date TEXT DEFAULT CURRENT_TIMESTAMP
+    published_date TEXT DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(type) REFERENCES types(id),
     FOREIGN KEY(subtype) REFERENCES subtypes(id)
 );
