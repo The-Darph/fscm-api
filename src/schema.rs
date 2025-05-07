@@ -5,13 +5,12 @@ diesel::table! {
         id -> Nullable<Integer>,
         #[sql_name = "type"]
         type_ -> Integer,
-        subtype -> Integer,
         description -> Text,
         body -> Text,
         scale -> Integer,
         source -> Text,
         transpired -> Nullable<Text>,
-        published_date -> Nullable<Text>,
+        published_date -> Text,
     }
 }
 
@@ -37,7 +36,6 @@ diesel::table! {
     }
 }
 
-diesel::joinable!(events -> subtypes (subtype));
 diesel::joinable!(events -> types (type_));
 diesel::joinable!(events_subtypes -> events (event_id));
 diesel::joinable!(events_subtypes -> subtypes (subtype_id));
