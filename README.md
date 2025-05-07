@@ -12,6 +12,8 @@ and a way to search, sort, and filter these things so people can get an idea of 
 For simplicity and security, all contributions will happen via database
 seeds. You write a database seed using standard SQL statements.
 
+![Database diagram](./docs/fscm-api-db.png)
+
 ### Branches
 
 The `master` branch is what ends up in production. It is all that will exist at first 
