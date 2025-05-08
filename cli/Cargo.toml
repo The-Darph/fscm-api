@@ -6,3 +6,7 @@ edition = "2024"
 [dependencies]
 anyhow = "1.0.98"
 clap = "4.5.37"
+
+# config = "0.14"
+# dotenv = "0.15"
+# serde = { version = "1", features = ["derive"] }
