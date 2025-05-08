@@ -4,16 +4,28 @@ use axum::response::IntoResponse;
 use axum::routing::get;
 use axum::{Json, Router};
 use axum::extract::Query;
-
-use std::net::SocketAddr;
+// use std::net::SocketAddr;
 use std::collections::HashMap;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 
 
 #[derive(Serialize)]
 struct Response {
     message: &'static str,
     results: i32,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Event {
+    id: i32,
+    #[serde(rename = "type")]
+    event_type: i32,
+    description: String,
+    body: String,
+    scale: i32,
+    source: String,
+    transpired: String,
+    published_date: String,
 }
 
 struct AppError(anyhow::Error);
@@ -39,7 +51,7 @@ async fn root(Query(params): Query<HashMap<String, String>>) -> Result<(StatusCo
     // let parsed_value = get_events(raw_value);
     let response = Response {
         message: "This app tracks fascists",
-        results: get_events(raw_value),//.context("Failed to grab records for a response")?,
+        results: get_events(raw_value), //.context("Failed to grab records for a response")?,
     };           // CHANGE fn NAME TO SOMETHING THAT MAKES SENSE
     
     Ok((StatusCode::OK, Json(response)))
@@ -64,7 +76,8 @@ fn get_events(input: Option<&str>) -> i32 {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let app = Router::new()
-        .route("/", get(root));
+        .route("/", get(root))
+        .layer(tower_http::catch_panic::CatchPanicLayer::new());
         
     let listener = tokio::net::TcpListener::bind("0.0.0.0:3000")
         .await
