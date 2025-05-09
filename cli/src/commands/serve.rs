@@ -1,4 +1,6 @@
-use clap::{ArgMatches, Command};
+use clap::{Arg, ArgMatches, Command};
+use clap::value_parser;
+use crate::settings::Settings;
 
 pub const COMMAND_NAME: &str = "serve";
 
@@ -14,7 +16,10 @@ pub fn configure() -> Command {
     )
 }
 
-pub fn handle(_matches: &ArgMatches) -> anyhow::Result<()> {
+pub fn handle(
+    matches: &ArgMatches, 
+    _settings: &Settings
+) -> anyhow::Result<()> { 
     let port: u16 = *matches.get_one("port").unwrap_or(&8080);
  
     println!("This will start the server when implemented and take another argument to specify port number");

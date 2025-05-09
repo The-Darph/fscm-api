@@ -13,7 +13,7 @@ pub struct Logging {
     pub log_level: Option<String>,
 }
 
-let log_level = settings.logging.log_level.unwrap_or("info");
+// let log_level = settings.logging.log_level.unwrap_or("info");
 
 #[derive(Debug, Deserialize, Default)]
 #[allow(unused)]
@@ -34,9 +34,13 @@ pub struct Settings {
 }
 
 impl Settings {
-    pub fn new(location: &str, env_prefix: &str) -> anyhow::Result<Self> {
-        let s = Config::builder()
-            .add_source(File::with_name(location))
+    pub fn new(location: Option<&str>, env_prefix: &str) -> anyhow::Result<Self> {
+        let mut builder = Config::builder();
+        if let Some(location) = location {
+            builder = builder.add_source(File::with_name(location));
+        }
+        
+        let s = builder
             .add_source(
                 Environment::with_prefix(env_prefix)
                     .separator("__")
