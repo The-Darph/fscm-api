@@ -16,13 +16,23 @@ pub fn configure() -> Command {
     )
 }
 
-pub fn handle(
-    matches: &ArgMatches, 
-    _settings: &Settings
-) -> anyhow::Result<()> { 
+pub fn handle(matches: &ArgMatches, settings: &Settings) -> anyhow::Result<()> {
     let port: u16 = *matches.get_one("port").unwrap_or(&8080);
- 
-    println!("This will start the server when implemented and take another argument to specify port number");
 
+    start_tokio(port, settings)?;
+
+    Ok(())
+}
+
+fn start_tokio(port: u16, settings: &Settings) -> anyhow::Result<()> {
+    tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()?
+        .block_on(async move {
+            // TBD ...
+            
+            Ok::<(), anyhow::Error>(())
+        })?;
+        
     Ok(())
 }
