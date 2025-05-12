@@ -1,5 +1,11 @@
 use clap::{Arg, ArgMatches, Command};
 use clap::value_parser;
+// use tokio::net::unix::SocketAddr;
+// use tokio::net::unix::SocketAddr;
+use std::net::SocketAddr;
+use std::net::IpAddr;
+use std::net::Ipv4Addr;
+// use axum::Router;
 use crate::settings::Settings;
 
 pub const COMMAND_NAME: &str = "serve";
@@ -29,10 +35,17 @@ fn start_tokio(port: u16, settings: &Settings) -> anyhow::Result<()> {
         .enable_all()
         .build()?
         .block_on(async move {
-            // TBD ...
-            
+            let addr = SocketAddr::new(
+                IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), 
+                port
+            );
+            let router = crate::api::configure();
+
+            let listener = tokio::net::TcpListener::bind(addr).await?;
+            axum::serve(listener, router.into_make_service()).await?;
+
             Ok::<(), anyhow::Error>(())
         })?;
-        
+
     Ok(())
 }
