@@ -7,22 +7,20 @@ pub struct Database {
     pub url: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Clone)]
 #[allow(unused)]
 pub struct Logging {
     pub log_level: Option<String>,
 }
 
-// let log_level = settings.logging.log_level.unwrap_or("info");
-
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Clone)]
 #[allow(unused)]
 pub struct ConfigInfo {
     pub location: Option<String>,
     pub env_prefix: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Clone)]
 #[allow(unused)]
 pub struct Settings {
     #[serde(default)]
