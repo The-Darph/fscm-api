@@ -1,7 +1,7 @@
 use config::{Config, Environment, File};
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize, Default)]
+#[derive(Debug, Deserialize, Default, Clone)]
 #[allow(unused)]
 pub struct Database {
     pub url: Option<String>,
