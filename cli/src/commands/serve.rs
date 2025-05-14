@@ -50,13 +50,14 @@ fn start_tokio(port: u16, settings: &Settings) -> anyhow::Result<()> {
 
             subscriber.init();
 
-            let state = Arc::new(ApplicationState::new(settings)?);
-            let router = crate::api::configure(state)
-                .layer(TraceLayer::new_for_http());
+            // let state = Arc::new(ApplicationState::new(settings)?);
+            // let router = crate::api::configure(state)
+            //     .layer(TraceLayer::new_for_http());
 
             // Application startup (load config & start server)
             let state = Arc::new(ApplicationState::new(settings)?);
-            let router = crate::api::configure(state);
+            let router = crate::api::configure(state)
+                            .layer(TraceLayer::new_for_http());
 
             let addr = SocketAddr::new(
                 IpAddr::V4(Ipv4Addr::new(0, 0, 0, 0)), 

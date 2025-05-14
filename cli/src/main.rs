@@ -24,11 +24,6 @@ fn main() -> anyhow::Result<()> {
         .map(|s: &String| Some(s.as_str()))
         .unwrap_or(None);
 
-    // let config_location = matches
-    //     .get_one::<String>("config")
-    //     .map(|s| s.as_str())
-    //     .unwrap_or("");
-
     let settings = Settings::new(config_location, "APP")?;
 
     commands::handle(&matches, &settings)?;
