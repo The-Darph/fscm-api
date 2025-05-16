@@ -1,6 +1,8 @@
 // use serde::Serialize;
 // use serde::Deserialize;
 use diesel::prelude::*;
+use diesel::Insertable;
+use crate::schema::events;
 
 #[derive(Queryable, Selectable)]
 #[diesel(table_name = crate::schema::events)]
@@ -14,6 +16,18 @@ pub struct Event {
     pub source: String,
     pub transpired: Option<String>,
     pub published_date: String,
+}
+
+#[derive(Insertable)]
+#[diesel(table_name = events)]
+pub struct NewEvent<'a> {
+    pub type_: i32,
+    pub description: &'a str,
+    pub body: &'a str,
+    pub scale: i32,
+    pub source: &'a str,
+    pub transpired: Option<&'a str>,
+    pub published_date: &'a str,
 }
 
 #[derive(Queryable, Selectable)]

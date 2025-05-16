@@ -1,5 +1,6 @@
 use super::handlers;
 use axum::routing::get;
+use axum::routing::post;
 use axum::Router;
 use crate::state::ApplicationState;
 use std::sync::Arc;
@@ -13,5 +14,13 @@ pub fn configure(state: Arc<ApplicationState>) -> Router {
         .route(
             "/events",
             get(handlers::events::all).with_state(state.clone()),
+        )
+        .route(
+            "/events",
+            post(handlers::events::insert).with_state(state.clone()),
+        )
+        .route(
+            "/events/{id}",
+            get(handlers::events::one).with_state(state.clone()),
         )
 }
