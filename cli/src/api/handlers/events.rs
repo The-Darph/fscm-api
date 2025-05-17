@@ -1,22 +1,28 @@
 use axum::{
     // body::Body,
     // routing::get,
-    response::Json,
-    // extract::State,
+    // response::Json,
+    extract::State,
     // Router,
+    Json,
 };
 // use crate::state::ApplicationState;
-// use axum::extract::State;
-// use std::sync::Arc;
+use std::sync::Arc;
 use serde_json::{Value, json};
-use crate::establish_connection;
+use crate::db::events::*;
 
-pub async fn all(/*State(state): State<Arc<ApplicationState>>*/) -> Json<Value> {
-    Json(json!({ "message": "all() Unimplemented. All events will be returned here." }))
+use crate::state::ApplicationState;
+use crate::db::events::get_all_events;
+use crate::model::Event;
+
+pub async fn all(State(state): State<Arc<ApplicationState>>) -> Json<Value> {
+    let mut conn = state.db_pool.get().expect("DB connection failed");
+    let events = get_all_events(&mut conn, "1000", "1").expect("Query failed");
+    Json(events)
 }
 
 pub async fn insert() -> Json<Value> {
-    let connection = &mut establish_connection();
+    // let connection = &mut establish_connection();
     Json(json!({ "message": "insert() Unimplemented. Events will be inserted here." }))
 }
 

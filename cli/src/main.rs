@@ -2,7 +2,7 @@ use clap::{Arg, Command};
 use cli::commands;
 use cli::settings::Settings;
 use dotenv::dotenv;
-
+// use crate::db::{establish_pool, DbPool, ApplicationState};
 
 fn main() -> anyhow::Result<()> {
     dotenv().ok();

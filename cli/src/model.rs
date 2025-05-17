@@ -2,9 +2,10 @@
 // use serde::Deserialize;
 use diesel::prelude::*;
 use diesel::Insertable;
+use serde::Serialize;
 use crate::schema::events;
 
-#[derive(Queryable, Selectable)]
+#[derive(Queryable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::events)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Event {
