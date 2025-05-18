@@ -15,9 +15,9 @@ use crate::state::ApplicationState;
 use crate::db::events::get_all_events;
 use crate::model::Event;
 
-pub async fn all(State(state): State<Arc<ApplicationState>>) -> Json<Value> {
+pub async fn all(State(state): State<Arc<ApplicationState>>) -> Json<Vec<Event>> {
     let mut conn = state.db_pool.get().expect("DB connection failed");
-    let events = get_all_events(&mut conn, "1000", "1").expect("Query failed");
+    let events = get_all_events(&mut conn, None, None).expect("Query failed");
     Json(events)
 }
 

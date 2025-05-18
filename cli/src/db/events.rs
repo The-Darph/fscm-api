@@ -10,15 +10,8 @@ pub fn get_all_events(
 ) -> QueryResult<Vec<Event>> {
     use crate::schema::events::dsl::*;
 
-    // let limit: i32 = results_limit.parse().unwrap_or(1000);
     let limit = parse_optional_limit(results_limit, 1000);
     let offset = parse_optional_limit(page, 0) * limit;
-    // let mut offset: i32 = page.parse().unwrap_or(0);
-    // let offset:i32 = if page.parse().unwrap_or(0) > 0 {
-    //     page.parse().unwrap_or(0) * limit
-    // } else {
-    //     0
-    // };
 
     events
         .limit(limit)
