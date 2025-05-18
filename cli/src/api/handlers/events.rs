@@ -3,6 +3,7 @@ use axum::{
     // routing::get,
     // response::Json,
     extract::State,
+    extract::Query,
     // Router,
     Json,
 };
@@ -14,10 +15,20 @@ use crate::db::events::*;
 use crate::state::ApplicationState;
 use crate::db::events::get_all_events;
 use crate::model::Event;
+use serde::Deserialize;
 
-pub async fn all(State(state): State<Arc<ApplicationState>>) -> Json<Vec<Event>> {
+#[derive(Deserialize)]
+pub struct PaginationParams {
+    pub limit: Option<String>,
+    pub page: Option<String>,
+}
+
+pub async fn all(
+    State(state): State<Arc<ApplicationState>>,
+    Query(params): Query<PaginationParams>,
+) -> Json<Vec<Event>> {
     let mut conn = state.db_pool.get().expect("DB connection failed");
-    let events = get_all_events(&mut conn, None, None).expect("Query failed");
+    let events = get_all_events(&mut conn, params.limit, params.page).expect("Query failed");
     Json(events)
 }
 
