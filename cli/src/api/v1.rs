@@ -4,7 +4,7 @@ use axum::routing::post;
 use axum::Router;
 use crate::state::ApplicationState;
 use std::sync::Arc;
-use crate::db::{establish_pool, DbPool};
+// use crate::db::{establish_pool, DbPool};
 
 pub fn configure(state: Arc<ApplicationState>) -> Router {
     Router::new()

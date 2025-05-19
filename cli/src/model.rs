@@ -1,11 +1,11 @@
-// use serde::Serialize;
 // use serde::Deserialize;
 use diesel::prelude::*;
 use diesel::Insertable;
 use serde::Serialize;
 use crate::schema::events;
 
-#[derive(Queryable, Selectable, Serialize)]
+#[derive(Queryable, Identifiable, Selectable, Associations, Serialize)]
+#[diesel(belongs_to(Type, foreign_key = type_))]
 #[diesel(table_name = crate::schema::events)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Event {
@@ -17,6 +17,13 @@ pub struct Event {
     pub source: String,
     pub transpired: Option<String>,
     pub published_date: String,
+}
+
+#[derive(Serialize)]
+pub struct EventWithRelations {
+    pub event: Event,
+    pub event_type: Type,
+    pub subtypes: Vec<Subtype>,
 }
 
 #[derive(Insertable)]
@@ -31,7 +38,9 @@ pub struct NewEvent<'a> {
     pub published_date: &'a str,
 }
 
-#[derive(Queryable, Selectable)]
+#[derive(Identifiable, Associations, Queryable, Selectable)]
+#[diesel(belongs_to(Event))]
+#[diesel(belongs_to(Subtype))]
 #[diesel(table_name = crate::schema::events_subtypes)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct EventSubtype {
@@ -40,7 +49,7 @@ pub struct EventSubtype {
     pub subtype_id: i32,
 }
 
-#[derive(Queryable, Selectable)]
+#[derive(Queryable, Identifiable, Serialize)]
 #[diesel(table_name = crate::schema::subtypes)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Subtype {
@@ -48,7 +57,7 @@ pub struct Subtype {
     pub description: String,
 }
 
-#[derive(Queryable, Selectable)]
+#[derive(Queryable, Identifiable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::types)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Type {

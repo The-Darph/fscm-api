@@ -10,11 +10,11 @@ use axum::{
 // use crate::state::ApplicationState;
 use std::sync::Arc;
 use serde_json::{Value, json};
-use crate::db::events::*;
+// use crate::db::events::*;
 
 use crate::state::ApplicationState;
 use crate::db::events::get_all_events;
-use crate::model::Event;
+use crate::model::EventWithRelations;
 use serde::Deserialize;
 
 #[derive(Deserialize)]
@@ -26,7 +26,7 @@ pub struct PaginationParams {
 pub async fn all(
     State(state): State<Arc<ApplicationState>>,
     Query(params): Query<PaginationParams>,
-) -> Json<Vec<Event>> {
+) -> Json<Vec<EventWithRelations>> {
     let mut conn = state.db_pool.get().expect("DB connection failed");
     let events = get_all_events(&mut conn, params.limit, params.page).expect("Query failed");
     Json(events)
