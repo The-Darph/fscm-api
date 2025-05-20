@@ -1,21 +1,17 @@
 use axum::{
-    // body::Body,
-    // routing::get,
-    // response::Json,
-    extract::State,
-    extract::Query,
+    response::IntoResponse,
+    extract::{State, Query, Multipart},
     // Router,
     Json,
 };
-// use crate::state::ApplicationState;
 use std::sync::Arc;
 use serde_json::{Value, json};
 // use crate::db::events::*;
-
 use crate::state::ApplicationState;
-use crate::db::events::get_all_events;
+use crate::db::events::{get_all_events, insert_event};
 use crate::model::EventWithRelations;
 use serde::Deserialize;
+// use diesel::prelude::*;
 
 #[derive(Deserialize)]
 pub struct PaginationParams {
@@ -32,9 +28,39 @@ pub async fn all(
     Json(events)
 }
 
-pub async fn insert() -> Json<Value> {
-    // let connection = &mut establish_connection();
-    Json(json!({ "message": "insert() Unimplemented. Events will be inserted here." }))
+pub async fn insert(
+    State(state): State<Arc<ApplicationState>>,
+    mut multipart: Multipart,
+) -> impl IntoResponse {
+    let mut conn = match state.db_pool.get() {
+        Ok(c) => c,
+        Err(_) => return Json(json!({ "status": "error", "message": "Database unavailable" })),
+    };
+
+    while let Some(field) = multipart.next_field().await.unwrap() {
+        let filename = field.file_name().map(str::to_owned).unwrap_or_else(|| "upload.csv".into());
+        let data = field.bytes().await.unwrap();
+
+        match insert_event(&mut conn, &data) {
+            Ok(count) => {
+                return Json(json!({
+                    "status": "ok",
+                    "filename": filename,
+                    "inserted": count
+                }))
+            }
+            Err(err) => {
+                eprintln!("CSV insert error: {:?}", err);
+                return Json(json!({
+                    "status": "error",
+                    "filename": filename,
+                    "message": err.to_string()
+                }))
+            }
+        }
+    }
+
+    Json(json!({ "status": "no file uploaded" }))
 }
 
 pub async fn one() -> Json<Value> {

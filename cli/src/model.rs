@@ -1,7 +1,7 @@
 // use serde::Deserialize;
 use diesel::prelude::*;
 use diesel::Insertable;
-use serde::Serialize;
+use serde::{Serialize, Deserialize};
 use crate::schema::events;
 
 #[derive(Queryable, Identifiable, Selectable, Associations, Serialize)]
@@ -26,17 +26,29 @@ pub struct EventWithRelations {
     pub subtypes: Vec<Subtype>,
 }
 
-#[derive(Insertable)]
+#[derive(Insertable, Deserialize)]
 #[diesel(table_name = events)]
-pub struct NewEvent<'a> {
+pub struct NewEvent {
     pub type_: i32,
-    pub description: &'a str,
-    pub body: &'a str,
+    pub description: String,
+    pub body: String,
     pub scale: i32,
-    pub source: &'a str,
-    pub transpired: Option<&'a str>,
-    pub published_date: &'a str,
+    pub source: String,
+    pub transpired: Option<String>,
+    pub published_date: String,
 }
+
+// #[derive(Insertable, Deserialize)]
+// #[diesel(table_name = events)]
+// pub struct NewEvent<'a> {
+//     pub type_: i32,
+//     pub description: &'a str,
+//     pub body: &'a str,
+//     pub scale: i32,
+//     pub source: &'a str,
+//     pub transpired: Option<&'a str>,
+//     pub published_date: &'a str,
+// }
 
 #[derive(Identifiable, Associations, Queryable, Selectable)]
 #[diesel(belongs_to(Event))]

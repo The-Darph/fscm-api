@@ -3,6 +3,8 @@ use crate::model::{NewEvent, Event, Type, Subtype};
 use diesel::prelude::*;
 use crate::schema::events::dsl::*;
 use crate::schema::{events, types, subtypes, events_subtypes};
+use csv::ReaderBuilder;
+use diesel::sqlite::SqliteConnection;
 
 pub fn get_all_events(
     conn: &mut SqliteConnection,
@@ -50,14 +52,23 @@ pub fn get_all_events(
 
 pub fn insert_event(
     conn: &mut SqliteConnection, 
-    new_event: &NewEvent
-) -> QueryResult<Event> {
-    use crate::schema::events;
+    csv_data: &[u8],
+) -> Result<usize, Box<dyn std::error::Error>> {
+    let mut reader = ReaderBuilder::new()
+        .has_headers(true)
+        .from_reader(csv_data);
 
-    diesel::insert_into(events::table)
-        .values(new_event)
-        .returning(Event::as_returning())
-        .get_result(conn)
+    let mut inserted_count = 0;
+
+    for result in reader.deserialize::<NewEvent>() {
+        let event = result?;
+        diesel::insert_into(events::table)
+            .values(&event)
+            .execute(conn)?;
+        inserted_count += 1;
+    }
+
+    Ok(inserted_count)
 }
 
 // This is more of a private function but whatever for now
