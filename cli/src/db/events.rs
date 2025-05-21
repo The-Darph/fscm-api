@@ -64,6 +64,8 @@ pub fn insert_event(
         let event = result?;
         diesel::insert_into(events::table)
             .values(&event)
+            .on_conflict(events::source)
+            .do_nothing()
             .execute(conn)?;
         inserted_count += 1;
     }
