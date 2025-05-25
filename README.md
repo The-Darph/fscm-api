@@ -7,6 +7,18 @@
 The purpose of this API is to provide a backend to pull data related to these fascists acts. It serves as an archive
 and a way to search, sort, and filter these things so people can get an idea of the scale and speed of what is unfolding.
 
+## Build & Run
+
+1. Have Rust installed.
+2. Run `cargo build -p cli` from the root of the project.
+3. Update your `.env` file
+4. Run `./target/debug/cli server`
+
+Okay so maybe running from the debug folder isn't the best idea but it's the best we got
+right now. Also, you may want to add some sort of watcher to the process if you run this 
+on a server so that it starts on reboot and comes back after a crash. There's still
+a ways to go before this project is stable in my eyes.
+
 ## Contributing
 
 For simplicity and security, all contributions will happen via database
