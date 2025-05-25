@@ -1,19 +1,16 @@
 use axum::{
     response::IntoResponse,
-    extract::{State, Query, Multipart},
+    extract::{State, Query, Multipart, Path},
     // Router,
     Json,
-    // http::StatusCode,
+    http::StatusCode,
 };
-use axum::http::StatusCode;
 use std::sync::Arc;
 use serde_json::{Value, json};
-// use crate::db::events::*;
 use crate::state::ApplicationState;
-use crate::db::events::{get_all_events, insert_event};
-use crate::model::EventWithRelations;
+use crate::db::events::{get_all_events, insert_event, get_event_by_id};
+use crate::model::{EventWithRelations, Event};
 use serde::Deserialize;
-// use diesel::prelude::*;
 
 #[derive(Deserialize)]
 pub struct PaginationParams {
@@ -83,6 +80,21 @@ pub async fn insert(
     (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "status": "no file uploaded" })))
 }
 
-pub async fn one() -> Json<Value> {
-    Json(json!({ "message": "one() Unimplemented. One event by id will be returned here." }))
+pub async fn one(
+    State(state): State<Arc<ApplicationState>>,
+    Path(id): Path<i32>,
+) -> impl IntoResponse {
+    let mut conn = match state.db_pool.get() {
+        Ok(c) => c,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": "db error" }))).into_response(),
+    };
+
+    match get_event_by_id(&mut conn, id) {
+        Ok(Some(event)) => Json(event).into_response(),
+        Ok(None) => (StatusCode::NOT_FOUND, Json(json!({ "error": "event not found" }))).into_response(),
+        Err(err) => {
+            eprintln!("Database error: {:?}", err);
+            (StatusCode::INTERNAL_SERVER_ERROR, Json(json!({ "error": "unexpected failure" }))).into_response()
+        }
+    }
 }

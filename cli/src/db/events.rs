@@ -1,5 +1,5 @@
 use crate::model::*;
-use crate::model::{NewEvent, Event, Type, Subtype};
+use crate::model::{NewEvent, Event, Type, Subtype, EventWithRelations};
 use diesel::prelude::*;
 use crate::schema::events::dsl::*;
 use crate::schema::{events, types, subtypes, events_subtypes};
@@ -71,6 +71,43 @@ pub fn insert_event(
     }
 
     Ok(inserted_count)
+}
+
+pub fn get_event_by_id(
+    conn: &mut SqliteConnection,
+    event_id: i32,
+) -> QueryResult<Option<EventWithRelations>> {
+    // First: load the event + its type
+    let result = events::table
+        .inner_join(types::table.on(events::type_.nullable().eq(types::id)))
+        .filter(events::id.eq(event_id))
+        .select((events::all_columns, types::all_columns))
+        .first::<(Event, Type)>(conn)
+        .optional()?;
+
+    let Some((event, event_type)) = result else {
+        return Ok(None);
+    };
+
+    // Then: get all subtype IDs for this event
+    let subtype_ids = events_subtypes::table
+        .filter(events_subtypes::event_id.eq(event.id.expect("event must have id")))
+        .select(events_subtypes::subtype_id)
+        .load::<i32>(conn)?;
+
+    let subtypes_list = if subtype_ids.is_empty() {
+        Vec::new()
+    } else {
+        subtypes::table
+            .filter(subtypes::id.eq_any(subtype_ids))
+            .load::<Subtype>(conn)?
+    };
+
+    Ok(Some(EventWithRelations {
+        event,
+        event_type,
+        subtypes: subtypes_list,
+    }))
 }
 
 // This is more of a private function but whatever for now
