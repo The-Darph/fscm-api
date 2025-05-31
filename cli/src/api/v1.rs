@@ -21,7 +21,7 @@ pub fn configure(state: Arc<ApplicationState>) -> Router {
             post(handlers::events::insert).with_state(state.clone()),
         )
         .route(
-            "/events/:id",
+            "/events/{id}",
             get(handlers::events::one).with_state(state.clone()),
         )
 }
