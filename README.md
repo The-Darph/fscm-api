@@ -9,6 +9,9 @@ and a way to search, sort, and filter these things so people can get an idea of 
 
 ## Build & Run
 
+__Make sure you configure everything first otherwise the app may build and run
+but then panic later. See [Configuration](#configuration) section below__
+
 1. Have Rust installed.
 2. Run `cargo build -p cli` from the root of the project.
 3. Update your `.env` file
@@ -46,6 +49,12 @@ To contribute to the code itself or even add an event through a seed, follow the
 ### What counts as a "fascist event"
 
 We're tracking two main types of events: Fascism and events leading to World War III or similar wars.
+
+## Configuration
+
+1. Make sure to fill out the .env file. For your API key you'll want to choose a strong password then run it through SHA-256 hashing that way you don't have to send the hash in clear text every time you use the HTML SAP to create new events
+2. In /cli/api/mod.rs you will need to update the allows URLs that are accepted for CORS requests. You should only use two. One for production and the other for development but you do what you want. It's your security.
+3. In the `docs` folder you'll find CSV files full of events you can fill your DB with. These items are already part of the database migrations. To add more, simply create *new* CSV files (I export them using Numbers on Mac) and then have ChatGPT or something help you turn those into SQL queries since there will be a lot of data to process by hand. __DO NOT__ add more to CSV files that have already been processed. The existing CSVs are for archive purposes only and if you ever need to nuke your database and start over.
 
 ## Deploy
 
