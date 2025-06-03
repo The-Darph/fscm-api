@@ -16,6 +16,7 @@ pub fn get_all_events(
 
     // 1. Join events to types
     let event_type_rows = events
+        .order(transpired.desc())
         .inner_join(types::table.on(events::type_.nullable().eq(types::id)))
         .limit(limit)
         .offset(offset.into())

@@ -38,18 +38,6 @@ pub struct NewEvent {
     pub published_date: String,
 }
 
-// #[derive(Insertable, Deserialize)]
-// #[diesel(table_name = events)]
-// pub struct NewEvent<'a> {
-//     pub type_: i32,
-//     pub description: &'a str,
-//     pub body: &'a str,
-//     pub scale: i32,
-//     pub source: &'a str,
-//     pub transpired: Option<&'a str>,
-//     pub published_date: &'a str,
-// }
-
 #[derive(Identifiable, Associations, Queryable, Selectable)]
 #[diesel(belongs_to(Event))]
 #[diesel(belongs_to(Subtype))]
@@ -61,7 +49,7 @@ pub struct EventSubtype {
     pub subtype_id: i32,
 }
 
-#[derive(Queryable, Identifiable, Serialize)]
+#[derive(Queryable, Identifiable, Selectable, Serialize)]
 #[diesel(table_name = crate::schema::subtypes)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct Subtype {

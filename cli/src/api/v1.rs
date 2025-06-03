@@ -5,6 +5,7 @@ use axum::Router;
 use crate::state::ApplicationState;
 use std::sync::Arc;
 // use crate::db::{establish_pool, DbPool};
+// use crate::api::handlers::{types_handler, subtypes_handler};
 
 pub fn configure(state: Arc<ApplicationState>) -> Router {
     Router::new()
@@ -23,5 +24,13 @@ pub fn configure(state: Arc<ApplicationState>) -> Router {
         .route(
             "/events/{id}",
             get(handlers::events::one).with_state(state.clone()),
+        )
+        .route(
+            "/types",
+            get(handlers::types::all).with_state(state.clone()),
+        )
+        .route(
+            "/subtypes",
+            get(handlers::subtypes::all).with_state(state.clone()),
         )
 }
