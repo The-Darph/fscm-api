@@ -3,7 +3,7 @@
 set -e  # Exit on error
 
 # === CONFIGURATION ===
-APP_NAME="yourapp"                     # Binary and service name
+APP_NAME="fscm-api"                     # Binary and service name
 REMOTE_USER="youruser"                # VPS username
 REMOTE_HOST="your.vps.ip"             # VPS IP or domain
 REMOTE_DIR="/home/$REMOTE_USER/$APP_NAME"
@@ -12,7 +12,7 @@ ENV_FILE=".env.production"            # your local production .env
 
 # === STEP 1: Build the app locally ===
 echo "🔨 Building app in release mode..."
-cargo build --release
+cargo build -p cli --release
 
 # === STEP 2: Sync files to server ===
 echo "📤 Syncing files to VPS..."
@@ -21,9 +21,10 @@ rsync -avz --delete \
     --exclude .git \
     --exclude node_modules \
     --exclude '*.log' \
-    ./target/release/$APP_NAME \
+    ./target/release/cli \
     $ENV_FILE \
-    migrations \
+    cli/migrations \
+    cli/diesel.toml \
     $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/
 
 # === STEP 3: Run migrations ===
