@@ -40,7 +40,7 @@ ssh "$REMOTE_USER@$REMOTE_HOST" bash <<EOF
   /home/bill/.cargo/bin/diesel migration run --migration-dir ./cli/migrations
 
   echo "🔁 Restarting systemd service..."
-  wait 5
+  sleep 5
   sudo -S systemctl restart fscm-api.service
 
   echo "🎉 Deployment to $REMOTE_HOST successful!"
