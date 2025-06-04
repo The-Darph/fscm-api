@@ -32,12 +32,12 @@ ssh "$REMOTE_USER@$REMOTE_HOST" bash <<EOF
   echo "📦 Building in release mode..."
   export RUST_BACKTRACE=1
   export $(cat .env.production | xargs)
-  cargo build -p cli --release
+  /home/bill/.cargo/bin/cargo build -p cli --release
 
   echo "✅ Build complete. Binary is at: target/release/cli"
 
   echo "📂 Running migrations..."
-  diesel migration run --migration-dir ./cli/migrations
+  /home/bill/.cargo/bin/diesel migration run --migration-dir ./cli/migrations
 
   echo "🔁 Restarting systemd service..."
   sudo systemctl restart fscm-api.service
