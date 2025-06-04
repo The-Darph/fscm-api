@@ -1,0 +1,15 @@
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (34, 10);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (34, 1);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (35, 6);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (36, 2);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (37, 5);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (37, 6);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (38, 3);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (38, 6);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (38, 9);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (39, 2);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (39, 6);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (40, 6);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (40, 7);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (40, 8);
+INSERT INTO events_subtypes (event_id, subtype_id) VALUES (40, 9);
