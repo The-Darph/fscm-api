@@ -4,7 +4,7 @@
 REMOTE_USER="bill"
 REMOTE_HOST="170.187.158.15"
 REMOTE_DIR="/home/bill/fscm-api"
-REPO_URL="bill@170.187.158.15:bill/git/fscm-api.git"
+REPO_URL="/home/bill/git/fscm-api.git"
 BRANCH="production"
 
 # === DEPLOYMENT ===
