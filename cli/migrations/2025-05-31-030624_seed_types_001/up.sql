@@ -1,3 +1,4 @@
-INSERT INTO types (description) VALUES ('Fascist');
-INSERT INTO types (description) VALUES ('Incompetent');
-INSERT INTO types (description) VALUES ('Societal decay');
+INSERT INTO subtypes (description) VALUES ('Constitutional rights violation');
+INSERT INTO subtypes (description) VALUES ('Human rights violation');
+INSERT INTO subtypes (description) VALUES ('Racism');
+INSERT INTO subtypes (description) VALUES ('Civil rights violation');

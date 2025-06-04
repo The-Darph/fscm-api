@@ -1,45 +1,46 @@
 #!/bin/bash
 
-set -e  # Exit on error
-
 # === CONFIGURATION ===
-APP_NAME="fscm-api"                     # Binary and service name
-REMOTE_USER="youruser"                # VPS username
-REMOTE_HOST="your.vps.ip"             # VPS IP or domain
-REMOTE_DIR="/home/$REMOTE_USER/$APP_NAME"
-SERVICE_NAME="$APP_NAME"              # systemd service name
-ENV_FILE=".env.production"            # your local production .env
+REMOTE_USER="bill"
+REMOTE_HOST="170.187.158.15"
+REMOTE_DIR="/home/bill/fscm-api"
+REPO_URL="bill@170.187.158.15:bill/git/fscm-api.git"
+BRANCH="production"
 
-# === STEP 1: Build the app locally ===
-echo "🔨 Building app in release mode..."
-cargo build -p cli --release
+# === DEPLOYMENT ===
+echo "🚀 Connecting to $REMOTE_HOST..."
 
-# === STEP 2: Sync files to server ===
-echo "📤 Syncing files to VPS..."
-rsync -avz --delete \
-    --exclude target/debug \
-    --exclude .git \
-    --exclude node_modules \
-    --exclude '*.log' \
-    ./target/release/cli \
-    $ENV_FILE \
-    cli/migrations \
-    cli/diesel.toml \
-    $REMOTE_USER@$REMOTE_HOST:$REMOTE_DIR/
+ssh "$REMOTE_USER@$REMOTE_HOST" bash <<EOF
+  set -e
 
-# === STEP 3: Run migrations ===
-echo "📦 Running database migrations..."
-ssh $REMOTE_USER@$REMOTE_HOST "
-    cd $REMOTE_DIR && \
-    export \$(cat $ENV_FILE | xargs) && \
-    diesel migration run --migration-dir ./cli/migrations
-"
+  echo "🔧 Creating app directory if it doesn't exist..."
+  mkdir -p $REMOTE_DIR
 
-# === STEP 4: Restart systemd service ===
-echo "🚀 Restarting service..."
-ssh $REMOTE_USER@$REMOTE_HOST "
-    sudo systemctl restart $SERVICE_NAME && \
-    sudo systemctl status $SERVICE_NAME --no-pager
-"
+  echo "📁 Changing to app directory..."
+  cd $REMOTE_DIR
 
-echo "✅ Deployment complete!"
+  if [ ! -d .git ]; then
+    echo "🧬 Cloning repository..."
+    git clone $REPO_URL .
+  else
+    echo "📡 Pulling latest changes from $BRANCH..."
+    git reset --hard
+    git clean -fd
+    git pull origin $BRANCH
+  fi
+
+  echo "📦 Building in release mode..."
+  export RUST_BACKTRACE=1
+  export $(cat .env.production | xargs)
+  cargo build -p cli --release
+
+  echo "✅ Build complete. Binary is at: target/release/cli"
+
+  echo "📂 Running migrations..."
+  diesel migration run --migration-dir ./cli/migrations
+
+  echo "🔁 Restarting systemd service..."
+  sudo systemctl restart fscm-api.service
+
+  echo "🎉 Deployment to $REMOTE_HOST successful!"
+EOF
