@@ -42,7 +42,7 @@ INSERT INTO events (type, description, body, scale, source, transpired)
 VALUES (
     1,
     'Trump Parade Featured on TV',
-    'Television coverage of Trump\'s U.S. Army 250th anniversary parade, examining its political significance and public reaction.',
+    'Television coverage of Trump''s U.S. Army 250th anniversary parade, examining its political significance and public reaction.',
     9,
     'https://www.nytimes.com/2025/06/15/arts/television/trump-parade.html?smid=nytcore-ios-share&referringSource=articleShare',
     '2025-06-15'
@@ -72,7 +72,7 @@ INSERT INTO events (type, description, body, scale, source, transpired)
 VALUES (
     3,
     'Sen. Mike Lee Peddles Misinformation on Minnesota Shootings',
-    'MSNBC\'s Rachel Maddow Show reports on Senator Mike Lee spreading misleading information following the Minnesota legislative shootings.',
+    'MSNBC''s Rachel Maddow Show reports on Senator Mike Lee spreading misleading information following the Minnesota legislative shootings.',
     8,
     'https://www.msnbc.com/rachel-maddow-show/maddowblog/republican-sen-mike-lee-peddles-misinformation-minnesota-shootings-sus-rcna213217',
     '2025-06-18'
